@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Chang Ting-Wei">
+    <meta name="description" content="三十六小時天氣預報">
+    <meta name="picSource" content="https://zh.pngtree.com/">
+    <title>36Hour Weather Forecast</title>
+    <link rel="shortcut icon" href="img/5062737.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400&display=swap');
+
+        body {
+            font-family: 'Rajdhani', GT America Standard, Helvetica Neue, Helvetica, Yu Gothic, YuGothic, BlinkMacSystemFont, Hiragino Sans, Hiragino Kaku Gothic ProN, meiryo, sans-serif;
+            background-image: url(img/forest_4115409.jpg);
+            background-size: cover;
+        }
+
+        #title {
+            text-align: center;
+            width: 100%;
+            height: auto;
+            position: relative;
+            margin-top: 7vh;
+            margin-bottom: 5vh;
+        }
+
+        #title img {
+            height: 200px;
+            width: 350px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -9vh);
+            z-index: -1;
+        }
+
+        table {
+            width: 80vw;
+            text-align: center;
+        }
+
+        th {
+            font-size: 1.5em;
+            color: #f83e66 !important;
+            background-color: #8daca930 !important;
+            border: none !important;
+            text-shadow:
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000;
+        }
+
+
+        #tr0 {
+            border-top: 2px solid black;
+
+        }
+
+        #tr21 {
+            border-bottom: 2px solid black;
+        }
+
+        .trtr {
+            border-left: 2px solid black;
+            border-right: 2px solid black;
+            background: rgba(241, 183, 183, 0.20);
+            /* border-style: none !important; */
+            /* backdrop-filter: blur( 12.0px ); */
+            padding-top: 2px;
+            padding-bottom: 2px;
+
+        }
+
+        img {
+            width: 1.5rem;
+            border: none;
+        }
+
+        .trtr:hover {
+            font-weight: bolder;
+            text-shadow:
+                -1px -1px 2px #eee,
+                1px -1px 2px #eee,
+                -1px 1px 2px #eee,
+                1px 1px 2px #eee;
+        }
+
+        .tablecontainer {
+            position: relative;
+
+        }
+
+        #littlebird {
+            position: absolute;
+            transform: translate(-50%, -38%);
+            width: 100px;
+        }
+        #cat{
+            position: absolute;
+            right:-180px;
+            bottom:0;
+        }
+        #cat img{
+            width: 200px;
+        }
+
+        .city,.remind{
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 992px) {
+            /* .part1,.part2,.part3{
+                
+            } */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="title">
+        <h1>36Hour Weather Forecast</h1>
+        <img src="img/4052547.png">
+    </div>
+    <div class="container tablecontainer">
+        <img src="img/623810.png" id="littlebird">
+        <table id="dt" class="table table-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>City</th>
+                    <th>2021/01/25 白天</th>
+                    <th>2021/01/25 晚上</th>
+                    <th>2021/01/26 凌晨</th>
+                    <th>remind you</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <script>
+
+
+
+            let data;
+            $.getJSON('https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001?Authorization=CWB-32B98DD7-DAAA-49AA-ADC6-3DD57B29EFA1&downloadType=WEB&format=JSON').done(function (re) {
+                // console.log(re);
+                data = re.cwbopendata.dataset.location; //取得22縣市
+
+                // console.log(data);
+
+                for (let i = 0; i < data.length; i++) {
+                    row = data[i];
+                    // console.log(row);
+                    // console.log(row.weatherElement[0].time[0].parameter.parameterValue)
+                    code = `
+                <tr class='trtr' id='tr${i}'>
+                <td class="pics">${i + 1}</td>
+                <td class='city'>${row.locationName}</td>
+                <td class='part1'><div class='weatherText'>${row.weatherElement[0].time[0].parameter.parameterName}  <img src="img/weatherImg/${row.weatherElement[0].time[0].parameter.parameterValue}.png"> </div><div class="T">溫度 ${row.weatherElement[2].time[0].parameter.parameterName}~ ${row.weatherElement[1].time[0].parameter.parameterName}℃</div></td>
+
+                <td class='part2'><div class='weatherText'>${row.weatherElement[0].time[1].parameter.parameterName}  <img src="img/weatherImg/${row.weatherElement[0].time[1].parameter.parameterValue}.png"> </div><div class="T">溫度 ${row.weatherElement[2].time[1].parameter.parameterName}~ ${row.weatherElement[1].time[1].parameter.parameterName}℃</div></td>
+                
+                <td class='part3'><div class='weatherText'>${row.weatherElement[0].time[2].parameter.parameterName}  <img src="img/weatherImg/${row.weatherElement[0].time[2].parameter.parameterValue}.png"> </div><div class="T">溫度 ${row.weatherElement[2].time[2].parameter.parameterName}~ ${row.weatherElement[1].time[2].parameter.parameterName}℃</div></td>
+                <td class="remind">${row.weatherElement[3].time[0].parameter.parameterName}</td>
+                </tr>
+                `
+
+                    $("tbody").append(code);
+                }
+
+
+
+                // 標題時間
+
+                const hurTxt = new Array();
+                hurTxt[0] = 'before dawn';
+                hurTxt[6] = 'morning';
+                hurTxt[12] = 'afternoon';
+                hurTxt[18] = `evening`;
+
+                const date1 = new Date(data[0].weatherElement[0].time[0].startTime),
+                    date2 = new Date(data[0].weatherElement[0].time[1].startTime),
+                    date3 = new Date(data[0].weatherElement[0].time[2].startTime);
+
+                console.log(date1, date2, date3);
+
+                $("#dt>thead").find("th").eq(2).html(`${date1.getFullYear()}/${date1.getMonth() + 1}/${date1.getDate()} ${hurTxt[date1.getHours()]}`);
+                $("#dt>thead").find("th").eq(3).html(`${date2.getFullYear()}/${date2.getMonth() + 1}/${date2.getDate()} ${hurTxt[date2.getHours()]}`);
+                $("#dt>thead").find("th").eq(4).html(`${date3.getFullYear()}/${date3.getMonth() + 1}/${date3.getDate()} ${hurTxt[date3.getHours()]}`);
+
+
+                // 規劃三個變數能代表時間123之day | night
+
+
+                // 等到ajax把table製作完成 再去執行dataTable套件
+
+                // $('#dt').DataTable();
+                // console.log($(".weatherText").eq(1).val());
+                // switch ($(".weatherText")[1]) {
+                //     case '陰時多雲':
+                //         $(".weatherText")[1].val('多雲啦')
+                //         break;
+                // }
+                
+            });
+            
+        </script>
+        <div id="cat"><img src="img/cat_4073103.png"></div>
+    </div>
+<span>感謝圖片來源:zh.pngtree.com</span>
+</body>
+
+</html>
